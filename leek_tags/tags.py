@@ -22,8 +22,8 @@ async def get_tag_names(ctx: AutocompleteContext):
     async with bot.connection as connection:
         cursor: Cursor = await connection.cursor()
         await cursor.execute(CREATE, [ctx.interaction.guild.id])
-        await connection.commit()
         await cursor.execute(FETCH_ALL, [ctx.interaction.guild.id])
+        await connection.commit()
         tags = await cursor.fetchall()
         await cursor.close()
         return [x[0] for x in tags]
@@ -45,8 +45,8 @@ class Tags(Cog):
         async with self.bot.connection as connection:
             cursor: Cursor = await connection.cursor()
             await cursor.execute(CREATE, [ctx.interaction.guild.id])
-            await connection.commit()
             await cursor.execute(FETCH_SINGLE, [ctx.interaction.guild.id, name])
+            await connection.commit()
             tag = await cursor.fetchone()
             await cursor.close()
 
