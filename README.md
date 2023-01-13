@@ -29,7 +29,11 @@ pip install -e .
 
 ## Usage
 
-TODO
+> WARNING: Please note that the Tags require SQL support to be enabled
+
+To add the cog to Leek, add the Cog `leek_tags:Tags` to your `DISCORD_COGS` environment variable in your `.env` file.
+
+The next time you start the Bot, the Tag system will be available for anyone in any server. You can control the permissions in each server by going to your `Server Settings > Apps > Integrations > Your Bot Name > Manage` and changing them there.  
 
 [actions-img]: https://img.shields.io/github/actions/workflow/status/LeekByLemon/LeekTags/main.yml?branch=master&label=actions
 [actions-url]: https://github.com/LeekByLemon/LeekTags/actions
