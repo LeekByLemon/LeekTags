@@ -38,5 +38,11 @@ setup(
     install_requires=[
         "leekbot>=0.0.1,<1.0.0"
     ],
-    python_requires=">=3.8"
+    python_requires=">=3.8",
+    package_data={
+        "": [
+            "*.json"
+        ]
+    },
+    include_package_data=True
 )
