@@ -1,11 +1,13 @@
 from aiomysql import Cursor
 from discord import Cog, ApplicationContext, slash_command, Option, AutocompleteContext
 from leek import DatabaseRequiredError, LeekBot, localize
+from pymysql import IntegrityError
 
 CREATE = "CREATE TABLE IF NOT EXISTS tags_%s (id INT NOT NULL auto_increment, name TEXT NOT NULL UNIQUE, " \
          "content TEXT NOT NULL, primary key (id))"
 FETCH_ALL = "SELECT (name) FROM tags_%s"
 FETCH_SINGLE = "SELECT (content) FROM tags_%s WHERE name=%s"
+ADD = "INSERT INTO tags_%s (name, content) VALUES (%s, %s)"
 
 
 async def get_tag_names(ctx: AutocompleteContext):
@@ -52,3 +54,19 @@ class Tags(Cog):
             await ctx.respond(localize("TAGS_NOT_FOUND", ctx.locale), ephemeral=True)
         else:
             await ctx.respond(tag[0])
+
+    @slash_command()
+    async def createtag(self, ctx: ApplicationContext, name: str, content: str):
+        """
+        Creates a new tag.
+        """
+        try:
+            async with self.bot.connection as connection:
+                cursor: Cursor = await connection.cursor()
+                await cursor.execute(CREATE, [ctx.interaction.guild.id])
+                await cursor.execute(ADD, [ctx.interaction.guild.id, name, content])
+                await connection.commit()
+                await cursor.close()
+                await ctx.respond(localize("TAGS_ADD_OKAY", ctx.locale, name), ephemeral=True)
+        except IntegrityError:
+            await ctx.respond(localize("TAGS_ADD_DUPE", ctx.locale, name), ephemeral=True)

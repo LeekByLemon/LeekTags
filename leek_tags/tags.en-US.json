@@ -1,3 +1,5 @@
 {
-    "TAGS_NOT_FOUND": "The tag does not exists."
+    "TAGS_NOT_FOUND": "The tag does not exists.",
+    "TAGS_ADD_OKAY": "The tag `{0}` was added!",
+    "TAGS_ADD_DUPE": "The tag `{0}` already exists!"
 }
