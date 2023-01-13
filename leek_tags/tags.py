@@ -8,6 +8,7 @@ CREATE = "CREATE TABLE IF NOT EXISTS tags_%s (id INT NOT NULL auto_increment, na
 FETCH_ALL = "SELECT (name) FROM tags_%s"
 FETCH_SINGLE = "SELECT (content) FROM tags_%s WHERE name=%s"
 ADD = "INSERT INTO tags_%s (name, content) VALUES (%s, %s)"
+DELETE = "DELETE FROM tags_%s WHERE name=%s"
 
 
 async def get_tag_names(ctx: AutocompleteContext):
@@ -70,3 +71,21 @@ class Tags(Cog):
                 await ctx.respond(localize("TAGS_ADD_OKAY", ctx.locale, name), ephemeral=True)
         except IntegrityError:
             await ctx.respond(localize("TAGS_ADD_DUPE", ctx.locale, name), ephemeral=True)
+
+    @slash_command()
+    async def deletetag(self, ctx: ApplicationContext, name: Option(str, "The tag name", autocomplete=get_tag_names)):
+        """
+        Deletes a specific tag.
+        """
+        async with self.bot.connection as connection:
+            cursor: Cursor = await connection.cursor()
+            await cursor.execute(CREATE, [ctx.interaction.guild.id])
+            await cursor.execute(DELETE, [ctx.interaction.guild.id, name])
+            await connection.commit()
+            rows = cursor.rowcount
+            await cursor.close()
+
+        if rows == 0:
+            await ctx.respond(localize("TAGS_NOT_FOUND", ctx.locale, name), ephemeral=True)
+        else:
+            await ctx.respond(localize("TAGS_DELETE_OKAY", ctx.locale, name), ephemeral=True)
