@@ -57,7 +57,8 @@ class Tags(Cog):
             await ctx.respond(tag[0])
 
     @slash_command()
-    async def createtag(self, ctx: ApplicationContext, name: str, content: str):
+    async def createtag(self, ctx: ApplicationContext, name: Option(str, "The tag name"),
+                        content: Option(str, "The text content of the tag")):
         """
         Creates a new tag.
         """
