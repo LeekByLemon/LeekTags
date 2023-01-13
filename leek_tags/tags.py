@@ -51,7 +51,7 @@ class Tags(Cog):
             await cursor.close()
 
         if tag is None:
-            await ctx.respond(localize("TAGS_NOT_FOUND", ctx.locale), ephemeral=True)
+            await ctx.respond(localize("TAGS_NOT_FOUND", ctx.locale, name), ephemeral=True)
         else:
             await ctx.respond(tag[0])
 
