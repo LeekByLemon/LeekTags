@@ -1,8 +1,9 @@
 from aiomysql import Cursor
-from discord import Cog, ApplicationContext, slash_command, Option, AutocompleteContext
+from discord import Cog, ApplicationContext, slash_command, Option, AutocompleteContext, Permissions
 from leek import DatabaseRequiredError, LeekBot, localize, get_localizations, get_default
 from pymysql import IntegrityError
 
+PERMISSIONS = Permissions(manage_messages=True)
 CREATE = "CREATE TABLE IF NOT EXISTS tags_%s (id INT NOT NULL auto_increment, name TEXT NOT NULL UNIQUE, " \
          "content TEXT NOT NULL, primary key (id))"
 FETCH_ALL = "SELECT (name) FROM tags_%s"
@@ -57,7 +58,8 @@ class Tags(Cog):
 
     @slash_command(name_localizations=get_localizations("TAGS_COMMAND_CREATETAG_NAME"),
                    description=get_default("TAGS_COMMAND_CREATETAG_DESC"),
-                   description_localization=get_localizations("TAGS_COMMAND_CREATETAG_DESC"))
+                   description_localization=get_localizations("TAGS_COMMAND_CREATETAG_DESC"),
+                   default_member_permissions=PERMISSIONS)
     async def createtag(self, ctx: ApplicationContext, name: Option(str, "The tag name"),
                         content: Option(str, "The text content of the tag")):
         try:
@@ -73,7 +75,8 @@ class Tags(Cog):
 
     @slash_command(name_localizations=get_localizations("TAGS_COMMAND_DELETETAG_NAME"),
                    description=get_default("TAGS_COMMAND_DELETETAG_DESC"),
-                   description_localization=get_localizations("TAGS_COMMAND_DELETETAG_DESC"))
+                   description_localization=get_localizations("TAGS_COMMAND_DELETETAG_DESC"),
+                   default_member_permissions=PERMISSIONS)
     async def deletetag(self, ctx: ApplicationContext, name: Option(str, "The tag name", autocomplete=get_tag_names)):
         async with self.bot.connection as connection:
             cursor: Cursor = await connection.cursor()
